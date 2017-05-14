@@ -45,7 +45,6 @@ class Lagrange {
 
             int toN = n;
             if (len - i <= toN) toN = len - i - 1;
-            // len = 50, i = 46, n = 4, 50 - 46 = 4, 3 <= 4
 
             output.distances[index] = inputData.distances[i];
             output.heights[index++] = inputData.heights[i];

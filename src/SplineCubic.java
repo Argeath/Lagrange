@@ -1,7 +1,6 @@
 /**
- * Performs spline interpolation given a set of control points.
- *
- */
+* @author Dominik Kinal <kinaldominik@gmail.com>
+*/
 class SplineCubic {
 
     private final InputData inputData;

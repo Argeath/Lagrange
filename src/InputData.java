@@ -2,9 +2,9 @@ import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by amino on 12.05.2017.
- */
-public class InputData {
+* @author Dominik Kinal <kinaldominik@gmail.com>
+*/
+class InputData {
     double distances[];
     double heights[];
     double delta[];
