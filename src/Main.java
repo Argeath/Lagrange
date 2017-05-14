@@ -4,14 +4,29 @@
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        chart("maps/naPG_128");
-        chart("maps/norway_128");
+        //chart("maps/naPG_128");
+        chart("maps/naPG_32");
+        //chart("maps/norway_128");
+        chart("maps/norway_32");
+        //chart("maps/norway_512");
+        //chart("maps/ggSopot_128");
+        //LagrangeN("maps/naPG_128");
+    }
+
+    private static void LagrangeN(String file) throws Exception {
+        InputData d = InputData.readCSV(file + ".csv");
+        InputData half = d.reduceByOne();
+        Lagrange l = new Lagrange(half);
+        InputData out = l.chart(1, half.distances.length);
+        double norma = norm(out.compare(d));
+        System.out.println("n & " + norma);
+        out.saveCSV(file + "_chaotic.csv");
     }
 
     private static void chart(String file) throws Exception {
         InputData min = null;
         double minNorm = 999999999;
-        for(int i = 2; i < 10; i++) {
+        for(int i = 1; i < 10; i++) {
             InputData d = InputData.readCSV(file + ".csv");
             InputData half = d.reduceByOne();
 
@@ -19,22 +34,25 @@ public class Main {
             InputData out = l.chart(1, i);
 
             double norma = norm(out.compare(d));
-            System.out.println(i + ", " + norma);
+            System.out.println(i + " & " + norma);
             if(norma < minNorm) {
                 minNorm = norma;
                 min = out;
             }
         }
 
-        if (min != null)
+
+        if (min != null) {
             min.saveCSV(file + "_lagrange.csv");
+            System.out.println("Min norm: " + minNorm);
+        }
 
         InputData d = InputData.readCSV(file + ".csv");
         InputData half = d.reduceByOne();
         SplineCubic s = SplineCubic.createMonotoneCubicSpline(half);
         InputData out = s.chart(1);
         double norma = norm(out.compare(d));
-        System.out.println("CubicSpline " + norma);
+        System.out.println("CubicSpline norm: " + norma);
         out.saveCSV(file + "_cubic.csv");
     }
 
