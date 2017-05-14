@@ -1,12 +1,47 @@
 public class Main {
 
-    public static void main(String[] args) {
-        InputData d = InputData.readCSV("jasienGaleriaMorena.csv");
+    public static void main(String[] args) throws Exception {
+        chart("maps/naPG_128");
+        chart("maps/norway_128");
+    }
 
-        Lagrange l = new Lagrange(d);
-        InputData out = l.chart(1);
-        out.print();
-        out.saveCSV("test.csv");
+    private static void chart(String file) throws Exception {
+        InputData min = null;
+        double minNorm = 999999999;
+        for(int i = 2; i < 10; i++) {
+            InputData d = InputData.readCSV(file + ".csv");
+            InputData half = d.reduceByOne();
+
+            Lagrange l = new Lagrange(half);
+            InputData out = l.chart(1, i);
+
+            double norma = norm(out.compare(d));
+            System.out.println(i + ", " + norma);
+            if(norma < minNorm) {
+                minNorm = norma;
+                min = out;
+            }
+        }
+
+        if (min != null)
+            min.saveCSV(file + "_lagrange.csv");
+
+        InputData d = InputData.readCSV(file + ".csv");
+        InputData half = d.reduceByOne();
+        SplineCubic s = SplineCubic.createMonotoneCubicSpline(half);
+        InputData out = s.chart(1);
+        double norma = norm(out.compare(d));
+        System.out.println("CubicSpline " + norma);
+        out.saveCSV(file + "_cubic.csv");
+    }
+
+    private static double norm(double[] d) {
+        double sum = 0;
+        for (double a : d) {
+            sum += a * a;
+        }
+
+        return Math.sqrt(sum);
     }
 }
 

@@ -31,7 +31,7 @@ class Lagrange {
         return sum;
     }
 
-    InputData chart(int resolution) {
+    InputData chart(int resolution, int n) {
         InputData output = new InputData();
         int elements = (inputData.distances.length - 1) * (resolution + 1) + 1;
         output.distances = new double[elements];
@@ -39,17 +39,19 @@ class Lagrange {
 
         int index = 0;
         int len = inputData.distances.length;
-        for(int i = 0; i < len - 1; i++) {
-            int fromN = (i == 0) ? 0 : 2;
-            if(i == 1) fromN = 1;
+        for (int i = 0; i < len - 1; i++) {
+            int fromN = n;
+            if (i < fromN) fromN = i;
 
-            int toN = (i == len - 1) ? 1 : 2;
+            int toN = n;
+            if (len - i <= toN) toN = len - i - 1;
+            // len = 50, i = 46, n = 4, 50 - 46 = 4, 3 <= 4
 
             output.distances[index] = inputData.distances[i];
             output.heights[index++] = inputData.heights[i];
 
-            double odl = (inputData.distances[i+1] - inputData.distances[i]) / (resolution + 1);
-            for(int r = 0; r < resolution; r++) {
+            double odl = (inputData.distances[i + 1] - inputData.distances[i]) / (resolution + 1);
+            for (int r = 0; r < resolution; r++) {
                 double x = inputData.distances[i] + (odl * (r + 1));
                 output.distances[index] = x;
                 output.heights[index++] = interpolate(x, i - fromN, i + toN);
